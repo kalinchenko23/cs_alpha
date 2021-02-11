@@ -1,0 +1,24 @@
+
+{% extends 'users/profile.html' %}
+<!doctype html>
+{%load static%}
+{% load crispy_forms_tags %}
+{% block data %}
+
+<form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <fieldset class="form-group">
+                          <legend class="border-bottom mb-4">Sent AER</legend>
+                          {{ form |crispy }}
+                        </fieldset>
+                        <div class="form-group">
+                          <button class="btn btn-primary btn-sm" type="submit">Send</button>
+                          <a href="profile/" style="color: #FF7F50">Cancel</a>
+                        </div>
+
+
+
+                      </form>
+                </div>
+                <hr class="my-4">
+        {% endblock %}

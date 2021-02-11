@@ -1,0 +1,25 @@
+<!doctype html>
+{%load static%}
+{% load crispy_forms_tags %}
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
+<link rel="stylesheet" href="{%static 'css/profile.css'%}">
+<body>
+    {% if messages %}
+    {%for message in messages%}
+        <div class="alert alert-{{message.tags}}">
+          {{message}}
+        </div>
+
+    {%endfor%}
+    {% endif %}
+    <div class="col-xl-8 order-xl-1" style="margin: 20% auto">
+          <div class="card bg-secondary shadow">
+            <div class="card-header bg-white border-0" style="text-align: center;">
+
+                 <h1 >You are logged out! See you back soon.</h1>
+                 <a href="/login">log in</a>
+
+
+                </div>
+                </div>
+                </div>

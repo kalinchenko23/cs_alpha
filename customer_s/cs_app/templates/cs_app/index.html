@@ -1,0 +1,366 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+  <head>
+    <title>Customer Service</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://fonts.googleapis.com/css?family=Amatic+SC:400,700|Work+Sans:300,400,700" rel="stylesheet">
+    <link rel="stylesheet" href="{%static 'fonts/icomoon/style.css'%}">
+
+    <link rel="stylesheet" href="{%static 'css/bootstrap.min.css'%}">
+    <link rel="stylesheet" href="{%static 'css/magnific-popup.css'%}">
+    <link rel="stylesheet" href="{%static 'css/jquery-ui.css'%}">
+    <link rel="stylesheet" href="{%static 'css/owl.carousel.min.css'%}">
+    <link rel="stylesheet" href="{%static 'css/owl.theme.default.min.css'%}">
+    <link rel="stylesheet" href="{%static 'css/bootstrap-datepicker.css'%}">
+    <link rel="stylesheet" href="{%static 'css/animate.css'%}">
+    <link rel="stylesheet" href="{%static 'css/calendar.css'%}">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mediaelement@4.2.7/build/mediaelementplayer.min.css">
+
+
+
+    <link rel="stylesheet" href="{%static 'fonts/flaticon/font/flaticon.css'%}">
+
+    <link rel="stylesheet" href="{%static 'css/aos.css'%}">
+
+    <link rel="stylesheet" href="{%static 'css/style.css'%}">
+
+  </head>
+  <body>
+
+
+  <div class="site-wrap">
+
+
+    <div class="site-mobile-menu" style="background-color: #F0E68C">
+      <div class="site-mobile-menu-header">
+        <div class="site-mobile-menu-close mt-3">
+          <span class="icon-close2 js-menu-toggle"></span>
+        </div>
+
+      </div>
+      <div class="site-mobile-menu-body" ></div>
+    </div> <!-- .site-mobile-menu -->
+
+
+    <div class="site-navbar-wrap js-site-navbar bg-white">
+      {% if messages %}
+    {%for message in messages%}
+    <div class="alert alert-{{message.tags}}">
+      {{message}}
+    </div>
+
+    {%endfor%}
+    {% endif %}
+
+      <div class="container">
+        <div class="site-navbar bg-light">
+          <div class="py-1">
+            <div class="row align-items-center">
+              <div class="col-2">
+                <h2 class="mb-0 site-logo"><a href="index.html"></a></h2>
+              </div>
+              <div class="col-10">
+                <nav class="site-navigation text-right" role="navigation">
+                  <div class="container">
+                    <!-- d-lg-none -->
+                    <div class="d-inline-block  ml-md-0 mr-auto py-3"><a href="#" class="site-menu-toggle js-menu-toggle"><span class="icon-menu h3" style="color: #FFE4B5; padding: : 2px"></span></a></div>
+                     <!-- d-lg-block -->
+                    <ul class="site-menu js-clone-nav d-none">
+                      <li class="active">
+                        <a href="/" >Home</a>
+                      </li>
+                      <li class="active" >
+                        <a href="/profile">My Profile</a>
+                      </li>
+                      <li class="active" >
+                        <a href="/pt_schedule">PT schedule</a>
+                      </li>
+                      <li><a href="saw_something/">See something - Say something </a></li>
+
+                      <li><a href="/logout">Log out</a></li>
+                    </ul>
+                  </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- <div class="site-blocks-cover overlay" style="background-image: url({%static 'images/IMG_2376.jpg'%});" data-aos="fade" data-stellar-background-ratio="0.5">
+      <div class="container">
+        <div class="row align-items-center justify-content-center">
+          <div class="col-md-10 text-center" data-aos="fade">
+            <h1 class="mb-4">Customer Service</h1>
+            <p class="mb-5">{{today}}&bullet; FT CARSON</p>
+            <p class="regular-font-size" >
+              <a href="/profile" class="btn btn-primary px-4 py-3 text-uppercase" >Go to your profile</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+ -->
+
+
+
+
+
+{% block data %}
+  <div class="text-center text-white mb-5"style="background-color: #556B2F">
+
+    <h1 class="display-4">CS section schedule</h1 >
+  <div id="calendar-wrap"style="background-color: #556B2F">
+        <header>
+            <h1>{{month_and_year.0}} {{month_and_year.1}} </h1>
+
+        </header>
+
+
+
+        <div id="calendar"  >
+          <ul class="weekdays">
+
+            <li>Monday</li>
+            <li>Tuesday</li>
+            <li>Wednesday</li>
+            <li>Thursday</li>
+            <li>Friday</li>
+            <li>Saturday</li>
+            <li>Sunday</li>
+          </ul>
+
+          <!-- Days from previous month -->
+
+          <ul class="days">
+
+            {%for i in days%}
+            {%if i == 0%}
+            <li style="background-color: #FFEFD5; border : none">
+
+
+
+            {%elif i != 0%}
+            <li class="day" style="background-color: #FFEFD5" >
+              <div class="date" style="color: #2F4F4F">{{i}}</div>
+
+
+            {%if i in week_days%}
+            <div class="event-desc" style="color: black;text-align: left">Customers seen: {%for b in work_p%} {%if b.1 == i and b.0 == month_and_year.2%} {%if b.2 == 'Oliver'%}<span style="color: red">{{b.3}} {%endif%}</span> {%if b.2 == 'Kalinchenko'%}<span style="color: purple">{{b.3}} {%endif%}</span>{%if b.2 == 'Skipwith'%}<span style="color: red">{{b.3}} {%endif%}</span>   {%endif%}{%endfor%}</div>
+            <div class="event-desc" style="color: black;text-align: left;">Pay inquiries:  {%for b in work_p%} {%if b.1 == i and b.0 == month_and_year.2%}{%if b.2 == 'Oliver'%}<span style="color: red">{{b.4}} {%endif%}</span> {%if b.2 == 'Kalinchenko'%}<span style="color: purple">{{b.4}} {%endif%}</span>{%if b.2 == 'Skipwith'%}<span style="color: red">{{b.4}} {%endif%}</span>   {%endif%}{%endfor%}</div>
+            <div class="event-desc" style="color: black;text-align: left;">Cycles coded:  {%for b in work_p%} {%if b.1 == i and b.0 == month_and_year.2%} {%if b.2 == 'Oliver'%}<span style="color: red">{{b.5}} {%endif%}</span> {%if b.2 == 'Kalinchenko'%}<span style="color: purple">{{b.5}} {%endif%}</span> {%if b.2 == 'Skipwith'%}<span style="color: red">{{b.5}} {%endif%}</span>  {%endif%}{%endfor%}</div>
+
+            {%endif%}
+
+
+            {%for a in d%}
+            {%if a.1 == i and a.0 == month_and_year.2%}
+              <div class="event-desc" style="color: purple">{{a.2}} ({{a.3}})</div>
+              {%endif%}
+              {%endfor%}
+
+            </li>
+            {%endif%}
+
+            {%endfor%}
+          </li>
+          </ul>
+
+
+
+
+
+        </div><!-- /. calendar -->
+      </div>
+    </div>
+
+    <div class="row">
+    </div>
+
+
+
+
+
+
+
+
+<!--
+    <div class="site-section block-15" style="background-color: #556B2F">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6 mx-auto text-center mb-5 section-heading">
+            <h2 class="text-uppercase">Our Team</h2>
+          </div>
+        </div>
+
+
+        <div class="nonloop-block-15 owl-carousel">
+
+
+            <div class="media-with-text">
+              <div class="img-border-sm mb-4">
+                <a href="#" class="popup-vimeo image-play">
+                  <img src="static/images/KALINCHENKO.jpg" alt="" class="img-fluid">
+                </a>
+              </div>
+              <h2 class="heading mb-0"><a href="#">SPC KALINCHENKO</a></h2>
+              <span class="mb-3 d-block post-date" style="color: black">AUG 31, 1997</a></span>
+              <p>From Ukraine</p>
+            </div>
+
+            <div class="media-with-text">
+              <div class="img-border-sm mb-4">
+                <a href="#" class="popup-vimeo image-play">
+                  <img src="static/images/SOTO.jpg" alt="" class="img-fluid">
+                </a>
+              </div>
+              <h2 class="heading mb-0"><a href="#">SPC SOTOMARTINEZ</a></h2>
+              <span class="mb-3 d-block post-date" style="color: black">JULY 25, 1986 </a></span>
+              <p>From Puerto Ricko</p>
+            </div>
+
+            <div class="media-with-text">
+              <div class="img-border-sm mb-4">
+                <a href="#" class="popup-vimeo image-play">
+                  <img src="static/images/CAMEN.jpg" alt="" class="img-fluid">
+                </a>
+              </div>
+              <h2 class="heading mb-0"><a href="#">SGT CAMEN</a></h2>
+              <span class="mb-3 d-block post-date" style="color: black">AUG 6, 1990 </a></span>
+              <p>From Columbia</p>
+            </div>
+
+            <div class="media-with-text">
+              <div class="img-border-sm mb-4">
+                <a href="#" class="popup-vimeo image-play">
+                  <img src="static/images/CONRAD.jpg" alt="" class="img-fluid">
+                </a>
+              </div>
+              <h2 class="heading mb-0"><a href="#">SGT CONRAD</a></h2>
+              <span class="mb-3 d-block post-date" style="color: black">Nov 21, 1987</a></span>
+              <p>From Tennessee</p>
+            </div>
+
+            <div class="media-with-text">
+              <div class="img-border-sm mb-4">
+                <a href="#" class="popup-vimeo image-play">
+                  <img src="static/images/ALLOWANOO.jpg" alt="" class="img-fluid">
+                </a>
+              </div>
+              <h2 class="heading mb-0"><a href="#">PV2 ALLOWANOO</a></h2>
+              <span class="mb-3 d-block post-date" style="color: black">OCT 24, 1998 </a></span>
+              <p>From Benin</p>
+            </div>
+
+            <div class="media-with-text">
+              <div class="img-border-sm mb-4">
+                <a href="#" class="popup-vimeo image-play">
+                  <img src="static/images/KLAINOS.jpg" alt="" class="img-fluid">
+                </a>
+              </div>
+              <h2 class="heading mb-0"><a href="#">SPC KLAINOS</a></h2>
+              <span class="mb-3 d-block post-date" style="color: black">MAR 26, 1999</a></span>
+              <p>From Illinois</p>
+            </div>
+
+
+
+        </div>
+
+
+        <div class="row">
+
+        </div>
+      </div>
+    </div> -->
+
+
+    {% endblock %}
+
+    <div class="py-5 quick-contact-info">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4 text-center">
+            <div>
+              <span class="icon-room text-white h2 d-block"></span>
+              <h2>Where</h2>
+              <p class="mb-0">1220 Specker Ave </p>
+              <p class="mb-0">Ft Carson</p>
+            </div>
+          </div>
+          <div class="col-md-4 text-center">
+            <div>
+              <span class="icon-clock-o text-white h2 d-block"></span>
+              <h2>Operation hours</h2>
+              <p class="mb-0">Mon-Fri 9:30-15:30</p>
+              <p class="mb-0">Thursday is off due to the training</p>
+            </div>
+          </div>
+          <div class="col-md-4 text-center">
+            <div>
+              <span class="icon-comments text-white h2 d-block"></span>
+              <h2>Email</h2>
+              <p class="mb-0">Email: info@yoursite.com</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+  <script src="{%static 'js/jquery-3.3.1.min.js'%}"></script>
+  <script src="{%static 'js/jquery-migrate-3.0.1.min.js'%}"></script>
+  <script src="{%static 'js/jquery-ui.js'%}"></script>
+  <script src="{%static 'js/popper.min.js'%}"></script>
+  <script src="{%static 'js/bootstrap.min.js'%}"></script>
+  <script src="{%static 'js/owl.carousel.min.js'%}"></script>
+  <script src="{%static 'js/jquery.stellar.min.js'%}"></script>
+  <script src="{%static 'js/jquery.countdown.min.js'%}"></script>
+  <script src="{%static 'js/jquery.magnific-popup.min.js'%}"></script>
+  <script src="{%static 'js/bootstrap-datepicker.min.js'%}"></script>
+  <script src="{%static 'js/aos.js'%}"></script>
+
+
+  <script src="{%static 'js/mediaelement-and-player.min.js'%}"></script>
+
+  <script src="{%static 'js/main.js'%}"></script>
+
+
+  <script>
+      document.addEventListener('DOMContentLoaded', function() {
+                var mediaElements = document.querySelectorAll('video, audio'), total = mediaElements.length;
+
+                for (var i = 0; i < total; i++) {
+                    new MediaElementPlayer(mediaElements[i], {
+                        pluginPath: 'https://cdn.jsdelivr.net/npm/mediaelement@4.2.7/build/',
+                        shimScriptAccess: 'always',
+                        success: function () {
+                            var target = document.body.querySelectorAll('.player'), targetTotal = target.length;
+                            for (var j = 0; j < targetTotal; j++) {
+                                target[j].style.visibility = 'visible';
+                            }
+                  }
+                });
+                }
+            });
+    </script>
+</body>
+

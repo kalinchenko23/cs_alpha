@@ -1,0 +1,69 @@
+{% extends 'cs_app/index.html' %}
+<!doctype html>
+{%load static%}
+{% load crispy_forms_tags %}
+{% block data %}
+<div class="text-center text-white mb-5"style="background-color: #556B2F">
+
+    <h1 class="display-4">CS section PT schedule</h1 >
+  <div id="calendar-wrap"style="background-color: #556B2F">
+        <header>
+            <h1>{{month_and_year.0}} {{month_and_year.1}} </h1>
+
+        </header>
+
+
+        <div id="calendar"  >
+          <ul class="weekdays">
+
+            <li>Monday</li>
+            <li>Tuesday</li>
+            <li>Wednesday</li>
+            <li>Thursday</li>
+            <li>Friday</li>
+            <li>Saturday</li>
+            <li>Sunday</li>
+          </ul>
+
+          <!-- Days from previous month -->
+
+          <ul class="days">
+
+            {%for i in days%}
+            {%if i == 0%}
+            <li style="background-color: #FFEFD5; border : none">
+
+
+
+            {%elif i != 0%}
+            <li class="day" style="background-color: #FFEFD5" >
+              <div class="date">{{i}}</div>
+
+
+
+            {%for item in d%}
+            {%if item.1 == i and item.0 == month_and_year.2%}
+              <div class="event-desc" style="color: #FF4500"><span style="color: black">Event:</span> {{item.2}}</div>
+              <div class="event-desc" style="color: #FF4500"><span style="color: black">Instructor:</span>  {{item.3}}</div>
+              {%endif%}
+              {%endfor%}
+              {%if today_split_day == i %}
+              <div class="event-desc" style="color: #006400">{{uniform}}</div>
+              {%endif%}
+
+
+              </li>
+            {%endif%}
+
+            {%endfor%}
+          </li>
+          </ul>
+        </div><!-- /. calendar -->
+      </div>
+    </div>
+    <div class="row">
+    </div>
+
+
+
+{%endblock%}

@@ -1,0 +1,29 @@
+{% load static %}
+{% load crispy_forms_tags %}
+<link rel="stylesheet" href="{%static 'css/login.register.css'%}">
+{% if messages %}
+{%for message in messages%}
+    <div class="alert alert-{{message.tags}}">
+      {{message}}
+      </div>
+
+{%endfor%}
+{% endif %}
+<title>Customer Service</title>
+<div class="login-page">
+  <div class="form">
+     <form class="login-form" method="POST">
+                {% csrf_token %}
+                <fieldset class="form-group">
+                  <legend class="border-bottom mb-4">Log in</legend>
+                  {{form|crispy}}
+                </fieldset>
+                <div class="form-group">
+                  <button class="btn btn-outline-info" type="submit">Log in</button>
+              </div>
+            </form>
+
+      <p class="message">Not registered? <a href="/register">Create an account</a></p>
+    </form>
+  </div>
+</div>

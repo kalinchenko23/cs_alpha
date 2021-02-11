@@ -1,0 +1,86 @@
+{% extends 'users/profile.html' %}
+<!doctype html>
+{%load static%}
+{% load crispy_forms_tags %}
+{% block data %}
+
+{% if schedule %}
+<table class="table mb-0" >
+    <h1>Appointements</h1>
+                    <thead>
+                      <tr >
+                        <th >Name</th>
+                        <th>Delete</th>
+                        <th>Update</th>
+
+                      </tr>
+                    </thead>
+                    <tbody>
+
+                      {% for i in schedule %}
+                        <tr>
+
+                          <td >{{ i.name }}</td>
+
+                          <td>
+                            <form method="post" action="{% url 'deleate_schedule' i.pk %}">
+                              {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm" >Delete</button >
+                            </form>
+                          <td>
+                            <form method="post" action="{% url 'schedule_update' i.pk %}">
+                              {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm" >Update</button >
+                            </form>
+
+
+                      </tr>
+                      {% endfor %}
+                      {%endif%}
+
+                    </tbody>
+                  </table>
+                  {%if perms.users.sgt_dean_chek_view%}
+                  <div style="margin-top: 1rem">
+                  <h1 style="margin-top: 10px;color: #8FBC8F ">Total numbers:</h1>
+                  <h1 style="margin-top: 10px;color: #2F4F4F ">Oliver is <span style="color:red">red</span>, Kalinchenko is <span style="color:purple">purple</span>, Skipwith is <span style="color:blue">blue</span></h1>
+                  <h1 style="margin-top: 10px; ">Customers: <span style="color: red">{{customers_oliver}}</span> <span style="color: purple">{{customers_kalinchenko}}</span> <span style="color: blue">{{customers_skipwith}}</span></h1>
+
+                  <h1 style="margin-top: 10px; ">Pay inquiries: <span style="color: red">{{pay_inq_oliver}}</span>
+                    <span style="color: purple">{{pay_inq_kalinchenko}}</span> <span style="color: blue">{{pay_inq_skipwith}}</span></h1>
+                  <h1 style="margin-top: 10px; ">Cycles: <span style="color: red">{{cycles_oliver}}</span> <span style="color: purple">{{cycles_kalinchenko}}</span> <span style="color: blue">{{cycles_skipwith}}</span></h1>
+
+                  <h1 style="margin-top: 10px; ">Rejects: <span style="color: red">{{rejects_oliver}}</span> <span style="color: urple">{{rejects_kalinchenko}}</span> <span style="color: blue">{{rejects_skipwith}}</span></h1>
+
+                  <h1 style="margin-top: 10px; ">Recycles: <span style="color: red">{{resycles_oliver}}</span> <span style="color: purple">{{resycles_kalinchenko}}</span> <span style="color: blue">{{resycles_skipwith}}</span></h1>
+                  </div>
+
+                  <div style="margin-top: 1rem">
+                  <h1 style="margin-top: 10px;color: #8FBC8F ">Your total numbers:</h1>
+                  <h1 style="margin-top: 10px; ">Customers: <span style="color: green">{{customers}}</span></h1>
+                  <h1 style="margin-top: 10px; ">Pay inquiries: <span style="color: green">{{pay_inq}}</span></h1>
+                  <h1 style="margin-top: 10px; ">Cycles: <span style="color: green">{{cycles}}</span></h1>
+                  <h1 style="margin-top: 10px; ">Rejects: <span style="color: red">{{rejects}}</span></h1>
+                  <h1 style="margin-top: 10px; ">Recycles: <span style="color: red">{{resycles}}</span></h1>
+                  </div>
+
+                  {%endif%}
+
+                  {%if not perms.users.sgt_dean_chek_view and user.last_name != Dean%}
+                  <div style="margin-top: 1rem">
+                  <h1 style="margin-top: 10px;color: #8FBC8F ">Total numbers:</h1>
+                  <h1 style="margin-top: 10px; ">Customers: <span style="color: green">{{customers}}</span></h1>
+                  <h1 style="margin-top: 10px; ">Pay inquiries: <span style="color: green">{{pay_inq}}</span></h1>
+                  <h1 style="margin-top: 10px; ">Cycles: <span style="color: green">{{cycles}}</span></h1>
+                  <h1 style="margin-top: 10px; ">Rejects: <span style="color: red">{{rejects}}</span></h1>
+                  <h1 style="margin-top: 10px; ">Recycles: <span style="color: red">{{resycles}}</span></h1>
+                  </div>
+                  {%endif%}
+                  {% if final_score %}
+                  <h1 style="margin-top: 20px; ">Your total ACFT score is <span style="color: #FF7F50">{{final_score}}</span></h1>
+                  {%endif%}
+
+
+                <hr class="my-4">
+
+        {% endblock %}
