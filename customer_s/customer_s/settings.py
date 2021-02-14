@@ -28,7 +28,7 @@ SECRET_KEY =config["KEY"]
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['173.255.193.145']
+ALLOWED_HOSTS = ['www.230customerservice.com','173.255.193.145']
 
 
 # Application definition
