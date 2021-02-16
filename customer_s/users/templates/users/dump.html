@@ -1,0 +1,149 @@
+
+<!doctype html>
+{%load static%}
+{% load crispy_forms_tags %}
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<script src="https://cdn.zingchart.com/zingchart.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
+<link rel="stylesheet" href="{%static 'css/profile.css'%}">
+<!-- <link rel="stylesheet" href="{%static 'css/calendar.css'%}"> -->
+</head>
+<body>
+  <div class="main-content">
+    {% if messages %}
+    {%for message in messages%}
+        <div class="alert alert-{{message.tags}}">
+          {{message}}
+        </div>
+
+    {%endfor%}
+    {% endif %}
+
+
+
+    <div class="header pb-8 pt-5 pt-lg-8 d-flex align-items-center" style="min-height: 600px; background-image: url({%static 'images/cover.jpg'%}); background-size: cover; background-position: center top;">
+      <!-- Mask -->
+      <span class="mask bg-gradient-default opacity-8" ></span>
+      <!-- Header container -->
+      <div class="container-fluid d-flex align-items-center">
+        <div class="row">
+          <div class="col-lg-7 col-md-10">
+            <h1 class="display-2 text-white">Hello {{user.profile.rank}} {{user.last_name}}</h1>
+            <p class="text-white mt-0 mb-5">This is your profile page. You can upload pdf files, view them and send an email to your NCO. Also you can fast and easy sent an AER.</p>
+            <a href="schedule_create/" class="btn btn-info">Appointement</a>
+            <a href="work_progres_create/" class="btn btn-info">Update numbers</a>
+            <a href="send_aer/" class="btn btn-info">Send an AER</a>
+            <a href="pt_schedule/" class="btn btn-info">PT schedule</a>
+            <a href="/" class="btn btn-info" id="home_page" >Home Page</a>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+            <div class="card-header bg-white border-0">
+              <div class="row align-items-center">
+                <div class="col-8">
+                  <h3 class="mb-0">My account</h3>
+                </div>
+                <div class="col-4 text-right">
+                  <a href="/acft_create" class="btn btn-sm btn-primary">Submit ACFT score</a>
+                  {%if perms.users.sgt_dean_chek_view%}
+                  <a href="/pt_update" class="btn btn-sm btn-primary">update PT schedule</a>
+                  {%endif%}
+
+
+                </div>
+                </div>
+              </div>
+
+
+            <div class="card-body">
+
+
+
+              {% block data %}
+
+
+                {% endblock %}
+              </div>
+
+                <div id="myChart"></div>
+
+                <!-- Description -->
+
+
+
+
+
+
+
+
+<script>
+var state ={
+    'items':[],
+    'values':[],
+  }
+
+  var dataURL = `/resultsdata`
+
+  $.ajax({
+    method:'GET',
+    url:dataURL,
+    success:function(response){
+      console.log('RESPONSE:', response)
+      for (var i in response){
+
+        var key = Object.keys(response[i])[0]
+        var value = Object.values(response[i])[0]
+
+        state.items.push(key)
+        state.values.push(value)
+      }
+
+      console.log('STATE:', state)
+      buildChart()
+
+    }
+  })
+
+  function buildChart(){
+      var chartData = {
+      "type":"bar",
+      "title": {
+        "text": "Your individual events"
+      },
+      "scale-x":{
+        "values":state.items
+      },
+      "series":[
+        {
+          "values":state.values
+        }
+      ]
+    }
+
+
+    zingchart.render({
+      id: "myChart",
+      data: chartData,
+    });
+  }
+
+
+
+
+</script>
+
+</body>
+
+

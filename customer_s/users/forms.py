@@ -1,38 +1,36 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import Profile, ACFT, Schedule, Work_Progress,PT
+from .models import  ACFT, Appointment, Work_Progress,PT,Profile
 
 class UserRegisterForm(UserCreationForm):
     email = forms.EmailField()
     last_name = forms.CharField(max_length=50)
 
-
     class Meta:
         model=User
         fields=['username',"last_name",'email','password1','password2']
 
-class RankForm(forms.ModelForm):
-    rank=forms.CharField(max_length=3)
-    class Meta:
-        model=Profile
-        fields=['rank']
-
 class DateInput(forms.DateInput):
     input_type = 'date'
 
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields=['rank','height','weight']
 
-class ScheduleForm(forms.ModelForm):
+
+class AppointmentForm(forms.ModelForm):
     date=forms.DateField(widget=forms.SelectDateWidget())
     class Meta:
-        model = Schedule
+        model = Appointment
         fields=['name','date']
 
 class Work_ProgressForm(forms.ModelForm):
     date=forms.DateField(widget=forms.SelectDateWidget())
     class Meta:
         model = Work_Progress
-        fields=['date','customers','pay_inq','cycles']
+        fields=['date','customers','pay_inq','tl','cycles','rejects','recycles','management_notices','rsearch']
 
 
 class UserUpdateForm(forms.ModelForm):
@@ -47,15 +45,6 @@ class PT_Form(forms.ModelForm):
     class Meta:
         model=PT
         fields=['name_of_event','instructor','date']
-
-# class SheduleForm(forms.ModelForm):
-#     shedule=forms.FileField()
-#     class Meta:
-#         model = Shedule
-#         fields = ['appointment describtion','date',]
-
-
-
 
 
 class AerForm(forms.Form):
@@ -73,6 +62,9 @@ class AerForm(forms.Form):
     q12 = forms.CharField(required=False,label=False,max_length=200,widget=forms.TextInput(attrs={'class': 'form-control',"placeholder":"improvement 5. Leave blank if none."}))
     q13 = forms.CharField(required=False,label="What are the alibis?",max_length=200,widget=forms.TextInput(attrs={'class': 'form-control',"placeholder":"alibi 1. Leave blank if none."}))
     q14 = forms.CharField(required=False,label=False,max_length=200,widget=forms.TextInput(attrs={'class': 'form-control',"placeholder":"alibi 2. Leave blank if none."}))
+
+class NumbersForm(forms.Form):
+    date=forms.DateField(widget=forms.SelectDateWidget())
 
 
 class ACFTForm(forms.ModelForm):

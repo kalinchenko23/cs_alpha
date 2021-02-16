@@ -8,18 +8,18 @@ import os
 
 
 
-
-
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    rank = models.CharField(max_length=3,blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    rank = models.CharField(max_length=3,null=True,blank=True)
+    height=models.CharField(max_length=3,null=True,blank=True)
+    weight= models.CharField(max_length=3,null=True,blank=True)
 
     def __str__(self):
         return f'{self.user.username} Profile'
 
 
 
-class Schedule(models.Model):
+class Appointment(models.Model):
     created_by=models.ForeignKey(User,null=True,on_delete= models.CASCADE)
     name =models.CharField(max_length=100)
     date = models.DateField()
@@ -27,7 +27,8 @@ class Schedule(models.Model):
         return f'{self.name}'
 
 class PT(models.Model):
-    instructors=[tuple([i,i]) for i in ['SPC Kalinchenko','PV2 Oliver', 'SPC Skipwith','SGT Dean']]
+    users=[i.last_name for i in User.objects.all()]
+    instructors=[tuple([i,i]) for i in users]
     name_of_event=models.CharField(max_length=100)
     instructor=models.CharField(choices=instructors, max_length=100)
     date = models.DateField()
@@ -39,11 +40,14 @@ class PT(models.Model):
 class Work_Progress(models.Model):
     created_by=models.ForeignKey(User,null=True,on_delete= models.CASCADE)
     date = models.DateField()
-    customers=models.IntegerField(null=True,max_length=100)
-    pay_inq=models.IntegerField(null=True,max_length=100)
-    cycles=models.CharField(null=True,max_length=100)
-    rejects=models.IntegerField(null=True,max_length=100)
-    recycles=models.IntegerField(null=True,max_length=100)
+    customers=models.IntegerField(null=True,max_length=100,default=0)
+    pay_inq=models.IntegerField(null=True,max_length=100,default=0)
+    tl=models.IntegerField(null=True,max_length=100,default=0)
+    cycles=models.IntegerField(null=True,max_length=100,default=0)
+    rejects=models.IntegerField(null=True,max_length=100,default=0)
+    recycles=models.IntegerField(null=True,max_length=100,default=0)
+    management_notices=models.IntegerField(null=True,max_length=100,default=0)
+    rsearch=models.IntegerField(null=True,max_length=100,default=0)
     def __str__(self):
         return f'{self.created_by}'
 

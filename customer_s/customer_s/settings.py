@@ -16,6 +16,8 @@ import json
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+
 with open('/etc/config.json') as config_file:
     config=json.load(config_file)
 
@@ -23,12 +25,12 @@ with open('/etc/config.json') as config_file:
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY =config["KEY"]
+SECRET_KEY = config["KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['173.255.193.145']
+ALLOWED_HOSTS = ['173.255.193.145','www.230customerservice.com']
 
 
 # Application definition
@@ -82,7 +84,7 @@ WSGI_APPLICATION = 'customer_s.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 

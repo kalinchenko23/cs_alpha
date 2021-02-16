@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render ,redirect
 from .calendar_for_schedule import Calendar
-from users.models import Schedule, Work_Progress, PT
+from users.models import Appointment, Work_Progress, PT
 from .forms import SawSome
 from .create_issue_pdf import SawSomething
 from django.core.mail import EmailMessage
@@ -21,7 +21,7 @@ def home(request):
     today_split_month=int(str(datetime.date.today()).split("-")[1])
 
     #Creates an objects for template
-    dat=Schedule.objects.all()
+    dat=Appointment.objects.all()
     work_progress=Work_Progress.objects.all()
     d=[(int(str(i.date).split("-")[1]),int(str(i.date).split("-")[2]),i.name,i.created_by.last_name) for i in dat]
     work_p=[(int(str(i.date).split("-")[1]),int(str(i.date).split("-")[2]),i.created_by.last_name,i.customers,i.pay_inq,i.cycles) for i in work_progress]
@@ -66,16 +66,6 @@ def pt_schedule(request):
             'month_and_year':x.get_current_month_and_year()}
     return render(request, 'cs_app/pt_schedule.html',context)
 
-
-
-
-
-
-
-
-
-
-
 @login_required(login_url='/login')
 def saw_something(request):
     form=SawSome()
@@ -91,8 +81,8 @@ def saw_something(request):
                 'Document',
                 'Please see a document attached.',
                 'kalinchenko.max@gmail.com',
-                ['kalinchenko.97@mail.ru'])
-            email.attach_file('/Users/maximkalinchenko/Desktop/customer_service/customer_s/media/issue/issue.pdf')
+                ['maksym.kalinchenko.mil@mail.mil'])
+            email.attach_file('/home/kalinchenkomax/cs_alpha/customer_s/media/issue/issue.pdf')
             email.send()
 
             messages.success(request, f"The issue was addressed.")
