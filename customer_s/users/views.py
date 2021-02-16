@@ -1,13 +1,14 @@
 from django.shortcuts import render ,redirect
 from django.contrib import messages
 import os
+from django.db.models import Sum
 from django.http import JsonResponse
-from .send_aer import SendAER
+from .send_aer import SendAER,SendNumbers
 from customer_s import settings
-from .forms import (UserRegisterForm, UserUpdateForm, ScheduleForm, Work_ProgressForm,
-    AerForm, RankForm, ACFTForm,PT_Form)
+from .forms import (UserRegisterForm, UserUpdateForm, AppointmentForm, Work_ProgressForm,ProfileForm,NumbersForm,
+    AerForm, ACFTForm,PT_Form)
 from django.contrib.auth.decorators import login_required
-from .models import Profile, User, ACFT, Schedule, Work_Progress, PT
+from .models import  User, ACFT, Appointment, Work_Progress, PT,Profile
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 # Create your views here.
 from django.urls import reverse
@@ -25,15 +26,18 @@ from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 
 x=SendAER()
+
+num=SendNumbers()
+
 y=ScoreCalculator()
 
-class ScheduleListView(LoginRequiredMixin, ListView):
-    model = Schedule
+class SectionListView(LoginRequiredMixin, ListView):
+    model = Appointment
     template_name='users/schedule_list.html'
     context_object_name= 'schedule'
 
     def get_queryset(self):
-            queryset = Schedule.objects.all()
+            queryset = Appointment.objects.all()
             user = self.request.user
             queryset = queryset.filter(
                     created_by=user
@@ -47,62 +51,75 @@ class ScheduleListView(LoginRequiredMixin, ListView):
         context['user']=user
         total_numbers=Work_Progress.objects.all()
         total_numbers_for_current_user=total_numbers.filter(created_by=user)
-        if total_numbers!= None:
+        if total_numbers_for_current_user!= None:
             customers=sum([i.customers for i in total_numbers_for_current_user])
             context['customers']=customers
 
             pay_inq=sum([i.pay_inq for i in total_numbers_for_current_user])
             context['pay_inq']=pay_inq
 
-            cycles=len([i.pay_inq for i in total_numbers_for_current_user])
+            tl=sum([i.tl for i in total_numbers_for_current_user])
+            context['tl']=tl
+
+            cycles=sum([i.cycles for i in total_numbers_for_current_user])
             context['cycles']=cycles
 
-            rejects=len([i.rejects for i in total_numbers_for_current_user])
+            rejects=sum([i.rejects for i in total_numbers_for_current_user])
             context['rejects']=rejects
 
-            recycles=len([i.rejects for i in total_numbers_for_current_user])
+            recycles=sum([i.recycles for i in total_numbers_for_current_user])
             context['recycles']=recycles
 
-        oliver=User.objects.get(last_name='Oliver')
-        kalinchenko=User.objects.get(last_name='Kalinchenko')
-        skipwith=User.objects.get(last_name='Skipwith')
+            rsearch=sum([i.rsearch for i in total_numbers_for_current_user])
+            context['rsearch']=rsearch
 
-        customers_oliver=sum([i.customers for i in total_numbers.filter(created_by=oliver)])
-        context['customers_oliver']=customers_oliver
-        customers_kalinchenko=sum([i.customers for i in total_numbers.filter(created_by=kalinchenko)])
-        context['customers_kalinchenko']=customers_kalinchenko
-        customers_skipwith=sum([i.customers for i in total_numbers.filter(created_by=skipwith)])
-        context['customers_skipwith']=customers_skipwith
+            management_n=sum([i.management_notices for i in total_numbers_for_current_user])
+            context['management_n']=management_n
 
-        pay_inq_oliver=sum([i.pay_inq for i in total_numbers.filter(created_by=oliver)])
-        context['pay_inq_oliver']=pay_inq_oliver
-        pay_inq_skipwith=sum([i.pay_inq for i in total_numbers.filter(created_by=skipwith)])
-        context['pay_inq_skipwith']=pay_inq_oliver
-        pay_inq_kalinchenko=sum([i.pay_inq for i in total_numbers.filter(created_by=kalinchenko)])
-        context['pay_inq_kalinchenko']=pay_inq_kalinchenko
+        users=[i.last_name for i in User.objects.all()]
+        context['users']=users
+        categories=[('Customers',context['customers']),('Pay inqueries',context['pay_inq']),('TLs',context['tl']),('Cycles',context['cycles']),('Rejects',context['rejects']),('Recycles',context['recycles']),
+        ('Management notices',context['management_n']),('Research',context['rsearch'])]
+        context['categories']=categories
+        total_n={}
+        total_n['Customers']=[]
+        total_n['Pay inqueries']=[]
+        total_n['TLs']=[]
+        total_n['Cycles']=[]
+        total_n['Rejects']=[]
+        total_n['Recycles']=[]
+        total_n['Management notices']=[]
+        total_n['Research']=[]
+        valid_users=[]
+        context['valid_users']=valid_users
+        for i in users:
+            if total_numbers.filter(created_by=User.objects.get(last_name=i)):
+                valid_users.append(i)
 
+                resp=total_numbers.filter(created_by=User.objects.get(last_name=i)).aggregate(Sum('customers'))
+                total_n['Customers'].append((i,resp['customers__sum']))
 
-        cycles_oliver=len([i.pay_inq for i in total_numbers.filter(created_by=oliver)])
-        context['cycles_oliver']=cycles_oliver
-        cycles_skipwith=len([i.pay_inq for i in total_numbers.filter(created_by=skipwith)])
-        context['cycles_skipwith']=cycles_skipwith
-        cycles_kalinchenko=len([i.pay_inq for i in total_numbers.filter(created_by=kalinchenko)])
-        context['cycles_kalinchenko']=cycles_kalinchenko
+                resp=total_numbers.filter(created_by=User.objects.get(last_name=i)).aggregate(Sum('pay_inq'))
+                total_n['Pay inqueries'].append((i,resp['pay_inq__sum']))
 
-        rejects_oliver=len([i.rejects for i in total_numbers.filter(created_by=oliver)])
-        context['rejects_oliver']=rejects_oliver
-        rejects_skipwith=len([i.rejects for i in total_numbers.filter(created_by=skipwith)])
-        context['rejects_skipwith']=rejects_skipwith
-        rejects_kalinchenko=len([i.rejects for i in total_numbers.filter(created_by=kalinchenko)])
-        context['rejects_kalinchenko']=rejects_kalinchenko
+                resp=total_numbers.filter(created_by=User.objects.get(last_name=i)).aggregate(Sum('tl'))
+                total_n['TLs'].append((i,resp['tl__sum']))
 
-        recycles_oliver=len([i.rejects for i in total_numbers.filter(created_by=oliver)])
-        context['recycles_oliver']=recycles_oliver
-        recycles_skipwith=len([i.rejects for i in total_numbers.filter(created_by=skipwith)])
-        context['recycles_skipwith']=recycles_skipwith
-        recycles_kalinchenko=len([i.rejects for i in total_numbers.filter(created_by=kalinchenko)])
-        context['recycles_kalinchenko']=recycles_kalinchenko
+                resp=total_numbers.filter(created_by=User.objects.get(last_name=i)).aggregate(Sum('cycles'))
+                total_n['Cycles'].append((i,resp['cycles__sum']))
 
+                resp=total_numbers.filter(created_by=User.objects.get(last_name=i)).aggregate(Sum('rejects'))
+                total_n['Rejects'].append((i,resp['rejects__sum']))
+
+                resp=total_numbers.filter(created_by=User.objects.get(last_name=i)).aggregate(Sum('recycles'))
+                total_n['Recycles'].append((i,resp['recycles__sum']))
+
+                resp=total_numbers.filter(created_by=User.objects.get(last_name=i)).aggregate(Sum('management_notices'))
+                total_n['Management notices'].append((i,resp['management_notices__sum']))
+
+                resp=total_numbers.filter(created_by=User.objects.get(last_name=i)).aggregate(Sum('rsearch'))
+                total_n['Research'].append((i,resp['rsearch__sum']))
+        context['total_n']=total_n
 
         event=ACFT.objects.all()
         event=event.filter(owner=user)
@@ -115,7 +132,42 @@ class ScheduleListView(LoginRequiredMixin, ListView):
                 leg_tuck_score=y.leg_t(i.leg_tucks)
                 ball_score=y.ball(i.ball)
                 final=pushups_score+run_score+deadlift_score+sprint_drug_score+leg_tuck_score+ball_score
-                context['final_score'] = final
+                context['final_individual_score'] = final
+        final_score=[]
+        context['final_score']=final_score
+        for i in users:
+            event=event.filter(owner=User.objects.get(last_name=i))
+            if event!= None:
+                for i in event:
+                    pushups_score=y.pushups(i.pushups)
+                    run_score=y.run(i.run)
+                    deadlift_score=y.dead_lift(i.dead_lift)
+                    sprint_drug_score=y.sdc(i.sprint_drag)
+                    leg_tuck_score=y.leg_t(i.leg_tucks)
+                    ball_score=y.ball(i.ball)
+                    final=pushups_score+run_score+deadlift_score+sprint_drug_score+leg_tuck_score+ball_score
+                    final_score.append((i,final))
+
+        profile=Profile.objects.all()
+        profile_for_current_user=profile.filter(user=user)
+        if profile_for_current_user!= None:
+            for i in profile_for_current_user:
+                context['rank']=i.rank
+                context['height']=i.height
+                context['weight']=i.weight
+        users_with_profile=[]
+        context['users_with_profile']=users_with_profile
+        height_weight={}
+        height_weight['height']=[]
+        height_weight['weight']=[]
+        context['height_weight']=height_weight
+        for i in users:
+            if profile.filter(user=User.objects.get(last_name=i)):
+                users_with_profile.append(i)
+                height_weight['height'].append((i," ".join([i.height for i in profile.filter(user=User.objects.get(last_name=i))])))
+                height_weight['weight'].append((i," ".join([i.weight for i in profile.filter(user=User.objects.get(last_name=i))])))
+
+
 
         return context
 
@@ -131,10 +183,23 @@ class Work_Progress_createView(LoginRequiredMixin, CreateView):
         form.instance.created_by = self.request.user
         return super().form_valid(form)
 
+class Profile_createView(LoginRequiredMixin, CreateView):
+    model = Profile
+    form_class=ProfileForm
+    template_name='users/profile_info_create.html'
 
-class Schedule_createView(LoginRequiredMixin, CreateView):
-    model = Schedule
-    form_class=ScheduleForm
+    def get_success_url(self):
+        return reverse('schedule-list')
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+
+
+class Appointment_createView(LoginRequiredMixin, CreateView):
+    model = Appointment
+    form_class=AppointmentForm
     template_name='users/shedule_upload.html'
 
     def get_success_url(self):
@@ -147,13 +212,13 @@ class Schedule_createView(LoginRequiredMixin, CreateView):
 @login_required(login_url='/login')
 def deleate_schedule(request,pk):
     if request.method=="POST":
-        appointement=Schedule.objects.get(pk=pk)
+        appointement=Appointment.objects.get(pk=pk)
         appointement.delete()
     return redirect("schedule-list")
 
-class ScheduleUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
-    model = Schedule
-    form_class=ScheduleForm
+class AppointmentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Appointment
+    form_class=AppointmentForm
 
     template_name='users/update_schedule.html'
 
@@ -214,15 +279,35 @@ def pt(request):
     return render(request,'users/PT.html',context)
 
 @login_required(login_url='/login')
+def numbers(request):
+    form=NumbersForm()
+    if request.method == 'POST':
+        form = NumbersForm(request.POST)
+        if form.is_valid():
+            date=form.cleaned_data["date"]
+            num.file_built(date)
+            email = EmailMessage(
+                'Document',
+                'Please see a document attached.',
+                'kalinchenko.max@gmail.com',
+                ['maksym.kalinchenko.mil@mail.mil'])
+            email.attach_file('/home/kalinchenkomax/cs_alpha/customer_s/media/numbers/daily_numbers.xlsx')
+            email.send()
+
+            messages.success(request, f"The report was successfully sent")
+            return redirect("/profile")
+    context={
+       "form":form}
+    return render(request,"users/numbers_form.html",context)
+
+@login_required(login_url='/login')
 def aer(request):
     form=AerForm()
-
     if request.method == 'POST':
-
         form = AerForm(request.POST)
         if form.is_valid():
-            user=request.user.get_full_name()
-            rank=request.user.profile.rank
+            user=request.user.last_name
+            rank=Profile.objects.get(user=User.objects.get(last_name=user)).rank
             q1=form.cleaned_data["q1"]
             q2=form.cleaned_data["q2"]
             q3=form.cleaned_data["q3"]
@@ -242,8 +327,8 @@ def aer(request):
                 'Document',
                 'Please see a document attached.',
                 'kalinchenko.max@gmail.com',
-                ['kalinchenko.97@mail.ru'])
-            email.attach_file('/Users/maximkalinchenko/Desktop/customer_service/customer_s/media/aer/aer.pdf')
+                ['maksym.kalinchenko.mil@mail.mil'])
+            email.attach_file('/home/kalinchenkomax/cs_alpha/customer_s/media/aer/aer.pdf')
             email.send()
 
             messages.success(request, f"The AER was successfully sent")

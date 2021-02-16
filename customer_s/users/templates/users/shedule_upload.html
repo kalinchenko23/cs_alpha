@@ -1,21 +1,135 @@
-{% extends 'users/profile.html' %}
 <!doctype html>
 {%load static%}
 {% load crispy_forms_tags %}
-{% block data %}
+{% load static %}
 
-<form method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <fieldset class="form-group">
-                          <legend class="border-bottom mb-4">Upload your appointement</legend>
-                          {{ form |crispy }}
-                        </fieldset>
-                        <div class="form-group">
-                          <button class="btn btn-primary btn-sm" type="submit">Upload</button>
-                        </div>
-                        <div class="form-group">
-                          <a href="profile/" style="color: #FF7F50">Cancel</a>
-                        </div>
-                      </form>
-                    </div>
-        {% endblock %}
+<!DOCTYPE html>
+
+<html lang="en">
+
+  <head>
+    <title>Customer Service</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://fonts.googleapis.com/css?family=Amatic+SC:400,700|Work+Sans:300,400,700" rel="stylesheet">
+    <link rel="stylesheet" href="{%static 'fonts/icomoon/style.css'%}">
+
+    <link rel="stylesheet" href="{%static 'css/bootstrap.min.css'%}">
+    <link rel="stylesheet" href="{%static 'css/magnific-popup.css'%}">
+    <link rel="stylesheet" href="{%static 'css/jquery-ui.css'%}">
+    <link rel="stylesheet" href="{%static 'css/owl.carousel.min.css'%}">
+    <link rel="stylesheet" href="{%static 'css/owl.theme.default.min.css'%}">
+    <link rel="stylesheet" href="{%static 'css/bootstrap-datepicker.css'%}">
+    <link rel="stylesheet" href="{%static 'css/animate.css'%}">
+    <link rel="stylesheet" href="{%static 'css/calendar.css'%}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mediaelement@4.2.7/build/mediaelementplayer.min.css">
+    <link rel="stylesheet" href="{%static 'fonts/flaticon/font/flaticon.css'%}">
+    <link rel="stylesheet" href="{%static 'css/aos.css'%}">
+    <link rel="stylesheet" href="{%static 'css/style.css'%}">
+
+  </head>
+  <body>
+
+
+  <div class="site-wrap">
+
+
+    <div class="site-mobile-menu" style="background-color: #F0E68C">
+      <div class="site-mobile-menu-header">
+        <div class="site-mobile-menu-close mt-3">
+          <span class="icon-close2 js-menu-toggle"></span>
+        </div>
+
+      </div>
+      <div class="site-mobile-menu-body" ></div>
+    </div> <!-- .site-mobile-menu -->
+
+
+    <div class="site-navbar-wrap js-site-navbar bg-white">
+      {% if messages %}
+    {%for message in messages%}
+    <div class="alert alert-{{message.tags}}">
+      {{message}}
+    </div>
+    {%endfor%}
+    {% endif %}
+     </div>
+
+
+
+    <div class="site-section block-15" style="background-color: #556B2F">
+      <div class="container">
+        <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <fieldset class="form-group">
+        <legend class="border-bottom mb-4">Upload your appointement</legend>
+        {{ form |crispy }}
+        </fieldset>
+        <div class="form-group">
+        <button class="btn btn-primary btn-sm" type="submit">Upload</button>
+        </div>
+        <div class="form-group">
+        <a href="profile/" style="color: #FF7F50">Cancel</a>
+        </div>
+        </form>
+        </div>
+      </div>
+      </div>
+      </div>
+
+
+
+
+    <div class="py-5 quick-contact-info">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4 text-center">
+            <div>
+              <span class="icon-room text-white h2 d-block"></span>
+              <h2>Where</h2>
+              <p class="mb-0">1220 Specker Ave </p>
+              <p class="mb-0">Ft Carson</p>
+            </div>
+          </div>
+          <div class="col-md-4 text-center">
+            <div>
+              <span class="icon-clock-o text-white h2 d-block"></span>
+              <h2>Operation hours</h2>
+              <p class="mb-0">Mon-Fri 9:30-15:30</p>
+              <p class="mb-0">Thursday is off due to the training</p>
+            </div>
+          </div>
+          <div class="col-md-4 text-center">
+            <div>
+              <span class="icon-comments text-white h2 d-block"></span>
+              <h2>Email</h2>
+              <p class="mb-0">Email: info@yoursite.com</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
