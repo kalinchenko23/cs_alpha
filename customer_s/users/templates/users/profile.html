@@ -60,14 +60,28 @@
             <p class="regular-font-size" >
               <a href="schedule_create/" class="btn btn-primary px-4 py-3 text-uppercase" >Make an appointements</a>
               <a href="work_progres_create/" class="btn btn-primary px-4 py-3 text-uppercase" >Update numbers</a>
-              <a href="pt_schedule/" class="btn btn-primary px-4 py-3 text-uppercase">PT schedule</a>
               <a href="send_aer/" class="btn btn-primary px-4 py-3 text-uppercase">Send an AER</a>
-              <a href="/acft_create" class="btn btn-primary px-4 py-3 text-uppercase">Submit ACFT score</a>
-              <a href="/profile_info_create" class="btn btn-primary px-4 py-3 text-uppercase">Update rank/hight/weight</a>
+              <a href="pt_schedule/" class="btn btn-primary px-4 py-3 text-uppercase"style="background-color: #6B8E23;border-color: #6B8E23">PT schedule</a>
+              {%if event%}
+              {%for i in event %}
+              <a href="{% url 'acft-update' i.pk %}" class="btn btn-primary px-4 py-3 text-uppercase">Update ACFT score</a>
+              {%endfor%}
+              {%else%}
+              <a href="{% url 'acft-create' %}" class="btn btn-primary px-4 py-3 text-uppercase">Submit ACFT score</a>
+              {%endif%}
+
+              {%if profile_for_current_user%}
+              {%for i in profile_for_current_user %}
+              <a href="{% url 'profile_info_update' i.pk %}" class="btn btn-primary px-4 py-3 text-uppercase">Update hight/weight/rank</a>
+              {%endfor%}
+              {%else%}
+              <a href="{% url 'profile_info_create' %}" class="btn btn-primary px-4 py-3 text-uppercase">Submit hight/weight/rank</a>
+              {%endif%}
               {%if perms.users.sgt_dean_chek_view%}
               <a href="/pt_update" class="btn btn-primary px-4 py-3 text-uppercase">update PT schedule</a>
               <a href="/numbers" class="btn btn-primary px-4 py-3 text-uppercase">Send numbers report</a>
               {%endif%}
+
               <a href="/" class="btn btn-primary px-4 py-3 text-uppercase" style="background-color: #6B8E23;border-color: #6B8E23">Go to calendar</a>
             </p>
           </div>
@@ -77,6 +91,7 @@
 
     <div class="site-section block-15" style="background-color: #556B2F">
       <div class="container">
+
 
 
         {% block data %}

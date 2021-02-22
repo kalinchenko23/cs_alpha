@@ -10,6 +10,9 @@ header {
     width: 100%;
 
 }
+#day_name{
+    display: none;
+}
 
 #calendar a {
     color: #8e352e;
@@ -108,6 +111,9 @@ header {
 
     #calendar .weekdays, #calendar .other-month {
         display: none;
+    }
+    #day_name{
+    display: contents;
     }
 
     #calendar li {

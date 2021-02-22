@@ -63,8 +63,10 @@ class AerForm(forms.Form):
     q13 = forms.CharField(required=False,label="What are the alibis?",max_length=200,widget=forms.TextInput(attrs={'class': 'form-control',"placeholder":"alibi 1. Leave blank if none."}))
     q14 = forms.CharField(required=False,label=False,max_length=200,widget=forms.TextInput(attrs={'class': 'form-control',"placeholder":"alibi 2. Leave blank if none."}))
 
+address_choice=[('SFC Newvine','SFC Newvine'), ('Myself','Myself')]
 class NumbersForm(forms.Form):
     date=forms.DateField(widget=forms.SelectDateWidget())
+    to=forms.ChoiceField(choices=address_choice)
 
 
 class ACFTForm(forms.ModelForm):

@@ -4,14 +4,14 @@
 {% load crispy_forms_tags %}
 {% block data %}
 
-{% if schedule %}
+{% if appointement %}
 <table class="appointements">
     <h1 style="text-align: center;">Appointements</h1>
     <thead>
-    <tr >
-    {% for i in schedule %}
+    <tr>
+    {% for i in appointement %}
     <th style="color: black">{{ i.name }}</th>
-    <th><form method="post" action="{% url 'deleate_schedule' i.pk %}">
+    <th><form method="post" action="{% url 'schedule_delete' i.pk %}">
     {% csrf_token %}
     <button type="submit" class="btn btn-danger btn-sm" >Delete</button >
     </form>

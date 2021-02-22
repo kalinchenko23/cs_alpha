@@ -32,9 +32,9 @@ num=SendNumbers()
 y=ScoreCalculator()
 
 class SectionListView(LoginRequiredMixin, ListView):
-    model = Appointment
+
     template_name='users/schedule_list.html'
-    context_object_name= 'schedule'
+    context_object_name= 'appointement'
 
     def get_queryset(self):
             queryset = Appointment.objects.all()
@@ -45,10 +45,13 @@ class SectionListView(LoginRequiredMixin, ListView):
             return queryset
 
 
+
     def get_context_data(self, **kwargs):
         context = super(ListView, self).get_context_data(**kwargs)
         user = self.request.user
         context['user']=user
+
+        #to use for an individual user numbers
         total_numbers=Work_Progress.objects.all()
         total_numbers_for_current_user=total_numbers.filter(created_by=user)
         if total_numbers_for_current_user!= None:
@@ -76,6 +79,8 @@ class SectionListView(LoginRequiredMixin, ListView):
             management_n=sum([i.management_notices for i in total_numbers_for_current_user])
             context['management_n']=management_n
 
+
+        #to use for collective users data
         users=[i.last_name for i in User.objects.all()]
         context['users']=users
         categories=[('Customers',context['customers']),('Pay inqueries',context['pay_inq']),('TLs',context['tl']),('Cycles',context['cycles']),('Rejects',context['rejects']),('Recycles',context['recycles']),
@@ -121,8 +126,10 @@ class SectionListView(LoginRequiredMixin, ListView):
                 total_n['Research'].append((i,resp['rsearch__sum']))
         context['total_n']=total_n
 
+        #to use in template with update ACFT button
         event=ACFT.objects.all()
         event=event.filter(owner=user)
+        context['event']=event
         if event!= None:
             for i in event:
                 pushups_score=y.pushups(i.pushups)
@@ -133,10 +140,12 @@ class SectionListView(LoginRequiredMixin, ListView):
                 ball_score=y.ball(i.ball)
                 final=pushups_score+run_score+deadlift_score+sprint_drug_score+leg_tuck_score+ball_score
                 context['final_individual_score'] = final
+
+        #to show in template ASFT results for all users
         final_score=[]
         context['final_score']=final_score
-        for i in users:
-            event=event.filter(owner=User.objects.get(last_name=i))
+        for a in users:
+            event=event.filter(owner=User.objects.get(last_name=a))
             if event!= None:
                 for i in event:
                     pushups_score=y.pushups(i.pushups)
@@ -146,10 +155,12 @@ class SectionListView(LoginRequiredMixin, ListView):
                     leg_tuck_score=y.leg_t(i.leg_tucks)
                     ball_score=y.ball(i.ball)
                     final=pushups_score+run_score+deadlift_score+sprint_drug_score+leg_tuck_score+ball_score
-                    final_score.append((i,final))
+                    final_score.append((a,final))
 
+        #to use as a profile for current user
         profile=Profile.objects.all()
-        profile_for_current_user=profile.filter(user=user)
+        profile_for_current_user=profile.filter(created_by=user)
+        context['profile_for_current_user']=profile_for_current_user
         if profile_for_current_user!= None:
             for i in profile_for_current_user:
                 context['rank']=i.rank
@@ -162,10 +173,10 @@ class SectionListView(LoginRequiredMixin, ListView):
         height_weight['weight']=[]
         context['height_weight']=height_weight
         for i in users:
-            if profile.filter(user=User.objects.get(last_name=i)):
+            if profile.filter(created_by=User.objects.get(last_name=i)):
                 users_with_profile.append(i)
-                height_weight['height'].append((i," ".join([i.height for i in profile.filter(user=User.objects.get(last_name=i))])))
-                height_weight['weight'].append((i," ".join([i.weight for i in profile.filter(user=User.objects.get(last_name=i))])))
+                height_weight['height'].append((i," ".join([i.height for i in profile.filter(created_by=User.objects.get(last_name=i))])))
+                height_weight['weight'].append((i," ".join([i.weight for i in profile.filter(created_by=User.objects.get(last_name=i))])))
 
 
 
@@ -192,8 +203,23 @@ class Profile_createView(LoginRequiredMixin, CreateView):
         return reverse('schedule-list')
 
     def form_valid(self, form):
-        form.instance.user = self.request.user
+        form.instance.created_by = self.request.user
         return super().form_valid(form)
+
+class Profile_updateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Profile
+    form_class=ProfileForm
+    template_name='users/profile_info_create.html'
+
+    def get_success_url(self):
+        return reverse('schedule-list')
+
+    def test_func(self):
+        profile = self.get_object()
+        if self.request.user == profile.created_by:
+            return True
+        return False
+
 
 
 
@@ -206,17 +232,26 @@ class Appointment_createView(LoginRequiredMixin, CreateView):
         return reverse('schedule-list')
 
     def form_valid(self, form):
-        form.instance.created_by = self.request.user
+        form.instance.created_by = self.request.created_by
         return super().form_valid(form)
 
-@login_required(login_url='/login')
-def deleate_schedule(request,pk):
-    if request.method=="POST":
-        appointement=Appointment.objects.get(pk=pk)
-        appointement.delete()
-    return redirect("schedule-list")
 
 class AppointmentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Appointment
+    form_class=AppointmentForm
+
+    template_name='users/update_schedule.html'
+
+    def get_success_url(self):
+        return reverse('schedule-list')
+
+    def test_func(self):
+        appointement = self.get_object()
+        if self.request.user == appointement.created_by:
+            return True
+        return False
+
+class AppointmentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Appointment
     form_class=AppointmentForm
 
@@ -247,23 +282,23 @@ class ACFTCreateView(LoginRequiredMixin, CreateView):
 
 
 
-class ACFTCupdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+class ACFTUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = ACFT
     form_class=ACFTForm
-
     template_name='users/ACFT.html'
+
 
     def get_success_url(self):
         return reverse('schedule-list')
 
     def test_func(self):
-        score = self.get_object(pk)
+        score = self.get_object()
         if self.request.user == score.owner:
             return True
         return False
 
-    def get_success_url(self):
-        return reverse('schedule-list')
+
+
 
 @login_required(login_url='/login')
 def pt(request):
@@ -280,17 +315,20 @@ def pt(request):
 
 @login_required(login_url='/login')
 def numbers(request):
+    user = request.user
+    email_options={'Myself':user.email}
     form=NumbersForm()
     if request.method == 'POST':
         form = NumbersForm(request.POST)
         if form.is_valid():
             date=form.cleaned_data["date"]
+            send_to=form.cleaned_data["to"]
             num.file_built(date)
             email = EmailMessage(
                 'Document',
                 'Please see a document attached.',
                 'kalinchenko.max@gmail.com',
-                ['maksym.kalinchenko.mil@mail.mil'])
+                [email_options[send_to]])
             email.attach_file('/home/kalinchenkomax/cs_alpha/customer_s/media/numbers/daily_numbers.xlsx')
             email.send()
 

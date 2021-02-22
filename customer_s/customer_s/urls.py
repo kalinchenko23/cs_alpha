@@ -19,8 +19,8 @@ from django.urls import path,include
 from users import views as user_views
 from django.conf import settings
 from django.conf.urls.static import static
-from users.views import  (ACFTCreateView, ACFTCupdateView, Appointment_createView,SectionListView,
-AppointmentUpdateView , Work_Progress_createView,Profile_createView, pt)
+from users.views import  (ACFTCreateView, ACFTUpdateView,Appointment_createView,SectionListView,Profile_updateView,
+AppointmentUpdateView , Work_Progress_createView,Profile_createView,AppointmentDeleteView, pt)
 from django.urls import re_path
 
 
@@ -34,14 +34,14 @@ urlpatterns = [
     re_path(r'work_progres_create/$',Work_Progress_createView.as_view(), name='work_progres_create'),
     re_path(r'profile_info_create/$',Profile_createView.as_view(), name='profile_info_create'),
     re_path(r'acft_create/$',ACFTCreateView.as_view(), name='acft-create'),
-    re_path(r'acft_update/$',ACFTCupdateView.as_view(), name='acft-update'),
     re_path(r'pt_update/$',pt, name='pt-update'),
     re_path(r'profile/$', SectionListView.as_view(), name='schedule-list'),
     path('resultsdata/',user_views.resultsACFT, name="acft_results"),
 
-
-    path('profile/<int:pk>/', user_views.deleate_schedule, name='deleate_schedule'),
+    path('profile/<int:pk>/acft_update/',ACFTUpdateView.as_view(), name='acft-update'),
+    path('profile/<int:pk>/profile_update/',Profile_updateView.as_view(), name='profile_info_update'),
     path('profile/<int:pk>/schedule_update', AppointmentUpdateView.as_view(), name='schedule_update'),
+    path('profile/<int:pk>/schedule_delete', AppointmentDeleteView.as_view(), name='schedule_delete'),
     path('register/',user_views.register, name="register"),
     path('login/',auth_views.LoginView.as_view(template_name='users/login.html'), name="login"),
     path('logout/',auth_views.LogoutView.as_view(template_name='users/logout.html'), name="logout"),
@@ -49,5 +49,4 @@ urlpatterns = [
 
 ]
 if settings.DEBUG:
-
     urlpatterns+=static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

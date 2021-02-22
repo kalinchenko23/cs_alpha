@@ -10,6 +10,7 @@ from django.contrib import messages
 from django.urls import reverse
 from .uniform_selector import uniform
 import datetime
+import itertools
 # Create your views here.
 
 x=Calendar()
@@ -21,12 +22,18 @@ def home(request):
     today_split_month=int(str(datetime.date.today()).split("-")[1])
 
     #Creates an objects for template
-    dat=Appointment.objects.all()
+    appointment=Appointment.objects.all()
+    appointments=[(int(i.date.day),int(i.date.month),i.name,i.created_by.last_name) for i in appointment]
+    colors=['purple','#A52A2A','#FFA500','#FF69B4','#FFD700','#1E90FF']
+
+    p='purple'
     work_progress=Work_Progress.objects.all()
-    d=[(int(str(i.date).split("-")[1]),int(str(i.date).split("-")[2]),i.name,i.created_by.last_name) for i in dat]
-    work_p=[(int(str(i.date).split("-")[1]),int(str(i.date).split("-")[2]),i.created_by.last_name,i.customers,i.pay_inq,i.cycles) for i in work_progress]
+    if len(work_progress)>len(colors):
+        work_p=[(int(i.date.day),int(i.date.month),i.created_by.last_name,i.customers,i.pay_inq,i.cycles,color) for i,color in itertools.zip_longest(work_progress,colors)]
+    else:
+        work_p=[(int(i.date.day),int(i.date.month),i.created_by.last_name,i.customers,i.pay_inq,i.cycles,i.tl,color) for i,color in zip(work_progress,colors)]
+
     dates=[i.date for i in work_progress]
-    event=""
     weekend_indexes=[5,6,12,13,19,20,26,27,33,34]
     week_days=[]
     for i in x.get_current_month_days():
@@ -39,13 +46,13 @@ def home(request):
             'uniform':uniform,
             'today_split_month':today_split_month,
             'today_split_day':today_split_day,
-            'd':d,
+            'appointments':appointments,
             'work_progress':work_progress,
             'week_days':week_days,
             'dates':dates,
             'today':today,
             'work_p':work_p,
-            'dat':dat,
+            'p':p,
             'month_and_year':x.get_current_month_and_year()}
     return render(request, 'cs_app/index.html',context)
 
@@ -54,14 +61,14 @@ def pt_schedule(request):
     today_split_day=int(str(datetime.date.today()).split("-")[2])
     today_split_month=int(str(datetime.date.today()).split("-")[1])
     pt=PT.objects.all()
-    d=[(int(str(i.date).split("-")[1]),int(str(i.date).split("-")[2]),i.name_of_event, i.instructor) for i in pt]
+    pt_plan=[(int(i.date.day),int(i.date.month),i.name_of_event, i.instructor) for i in pt]
     event=""
 
     context={'days':x.get_current_month_days(),
             'uniform':uniform,
             'today_split_month':today_split_month,
             'today_split_day':today_split_day,
-            'd':d,
+            'pt_plan':pt_plan,
             'pt':pt,
             'month_and_year':x.get_current_month_and_year()}
     return render(request, 'cs_app/pt_schedule.html',context)

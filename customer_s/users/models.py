@@ -9,13 +9,13 @@ import os
 
 
 class Profile(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(User,null=True, on_delete=models.CASCADE)
     rank = models.CharField(max_length=3,null=True,blank=True)
     height=models.CharField(max_length=3,null=True,blank=True)
     weight= models.CharField(max_length=3,null=True,blank=True)
 
     def __str__(self):
-        return f'{self.user.username} Profile'
+        return f'{self.created_by} Profile'
 
 
 

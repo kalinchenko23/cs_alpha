@@ -4,22 +4,24 @@ import datetime
 class Calendar():
 
     def get_current_month_days(self):
-        x=str(datetime.datetime.today()).split("-")
+        x=datetime.datetime.today()
         get_current_month=calendar.month_name[1]
 
-        sum_of_days=[]
-        for i in calendar.monthcalendar(int(x[0]),int(x[1])):
-            sum_of_days+=i
+        days=[]
+        for day in calendar.monthcalendar(int(x.year),int(x.month)):
+            for i in day:
+                day_name=calendar.day_name[calendar.weekday(int(x.year), int(x.month), int(i))]
+                days.append((i,day_name))
 
 
-        return sum_of_days
-
+        return days
     def get_current_month_and_year(self):
-        x=str(datetime.datetime.today()).split("-")
-        current_month=calendar.month_name[int(x[1])]
-        current_year=x[0]
-        month_number=int(x[1])
+        x=datetime.datetime.today()
+        current_month=calendar.month_name[int(x.month)]
+        current_year=x.year
+        month_number=int(x.month)
         return [current_month,current_year,month_number]
 
-
+cal=Calendar()
+print(cal.get_current_month_days())
 

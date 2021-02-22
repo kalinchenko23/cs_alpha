@@ -30,33 +30,34 @@
           <ul class="days">
 
             {%for i in days%}
-            {%if i == 0%}
-            <li style="background-color: #FFEFD5; border : none">
+            {%if i.0 == 0%}
+            <li style="background-color: #FFEFD5; border : none"> </li>
 
 
 
-            {%elif i != 0%}
+            {%elif i.0 != 0%}
             <li class="day" style="background-color: #FFEFD5" >
-              <div class="date">{{i}}</div>
+              <div class="date">{{i.0}} <span id='day_name'>{{i.1}}</span></div>
 
 
 
-            {%for item in d%}
-            {%if item.1 == i and item.0 == month_and_year.2%}
+            {%for item in pt_plan%}
+            {%if item.0 == i.0 and item.1 == month_and_year.2%}
               <div class="event-desc" style="color: #FF4500"><span style="color: black">Event:</span> {{item.2}}</div>
               <div class="event-desc" style="color: #FF4500"><span style="color: black">Instructor:</span>  {{item.3}}</div>
               {%endif%}
               {%endfor%}
-              {%if today_split_day == i %}
+              {%if today_split_day == i.0 %}
               <div class="event-desc" style="color: #006400">{{uniform}}</div>
               {%endif%}
 
 
-              </li>
+
             {%endif%}
 
             {%endfor%}
-          </li>
+            </li>
+
           </ul>
         </div><!-- /. calendar -->
       </div>
