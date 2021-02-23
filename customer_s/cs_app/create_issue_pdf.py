@@ -6,7 +6,7 @@ from reportlab.platypus import Paragraph, Spacer, Table, Image, ListFlowable
 class SawSomething():
 
     def pdf_built(self,issue):
-        report = SimpleDocTemplate("/home/kalinchenkomax/cs_alpha/cusomer_s/media/issue/issue.pdf", pageSize="A4")
+        report = SimpleDocTemplate("/home/kalinchenkomax/cs_alpha/customer_s/media/issue/issue.pdf", pageSize="A4")
         style=getSampleStyleSheet()
         today=date.today()
 

@@ -22,6 +22,4 @@ class Calendar():
         month_number=int(x.month)
         return [current_month,current_year,month_number]
 
-cal=Calendar()
-print(cal.get_current_month_days())
 

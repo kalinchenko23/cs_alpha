@@ -345,7 +345,7 @@ def aer(request):
         form = AerForm(request.POST)
         if form.is_valid():
             user=request.user.last_name
-            rank=Profile.objects.get(user=User.objects.get(last_name=user)).rank
+            rank=Profile.objects.get(created_by=User.objects.get(last_name=user)).rank
             q1=form.cleaned_data["q1"]
             q2=form.cleaned_data["q2"]
             q3=form.cleaned_data["q3"]
