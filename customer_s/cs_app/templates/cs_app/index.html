@@ -33,8 +33,6 @@
 
   </head>
   <body>
-
-
   <div class="site-wrap">
   <div class="site-mobile-menu" style="background-color: #F0E68C">
       <div class="site-mobile-menu-header">
@@ -44,13 +42,6 @@
       </div>
       <div class="site-mobile-menu-body" ></div>
     </div> <!-- .site-mobile-menu -->
-     {% if messages %}
-    {%for message in messages%}
-    <div class="alert alert-{{message.tags}}"></div>
-      {{message}}
-      {%endfor%}
-    {% endif %}
-
     <div class="site-navbar-wrap js-site-navbar bg-white">
 
 
@@ -91,7 +82,12 @@
         </div>
       </div>
     </div>
-
+{% if messages %}
+    {%for message in messages%}
+    <div class="alert alert-{{message.tags}}"></div>
+      {{message}}
+      {%endfor%}
+    {% endif %}
 
 {% block data %}
   <div class="text-center text-white mb-5"style="background-color: #556B2F">
