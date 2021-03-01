@@ -99,7 +99,7 @@
     <h1 class="display-4">CS section schedule</h1 >
   <div id="calendar-wrap"style="background-color: #556B2F">
         <header>
-            <h1>{%for item in work_p%}<span style="color: {{item.7}};font-size: 25px">{{item.2}}</span>{%endfor%}</h1>
+            <h1>{% for name, color in colors_for_users.items %}<span style="color: {{color}};font-size: 25px">{{name}}</span>{%endfor%}</h1>
             <h1></h1>
 
         </header>

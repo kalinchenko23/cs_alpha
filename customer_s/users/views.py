@@ -232,7 +232,7 @@ class Appointment_createView(LoginRequiredMixin, CreateView):
         return reverse('schedule-list')
 
     def form_valid(self, form):
-        form.instance.created_by = self.request.created_by
+        form.instance.created_by = self.request.user
         return super().form_valid(form)
 
 

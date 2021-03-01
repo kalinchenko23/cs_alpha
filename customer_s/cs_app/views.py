@@ -28,10 +28,20 @@ def home(request):
 
     p='purple'
     work_progress=Work_Progress.objects.all()
-    if len(work_progress)>len(colors):
-        work_p=[(int(i.date.day),int(i.date.month),i.created_by.last_name,i.customers,i.pay_inq,i.cycles,color) for i,color in itertools.zip_longest(work_progress,colors)]
-    else:
-        work_p=[(int(i.date.day),int(i.date.month),i.created_by.last_name,i.customers,i.pay_inq,i.cycles,i.tl,color) for i,color in zip(work_progress,colors)]
+    work_p=[[int(i.date.day),int(i.date.month),i.created_by.last_name,i.customers,i.pay_inq,i.cycles,i.tl] for i in work_progress]
+    colors_for_users={}
+    for i,color in zip(work_p,colors):
+        if i[2] not in colors_for_users:
+            colors_for_users[i[2]]=color
+        else:
+            pass
+    for i in work_p:
+        if i[2] in colors_for_users:
+             i.append(colors_for_users[i[2]])
+        else:
+            pass
+
+
 
     dates=[i.date for i in work_progress]
     weekend_indexes=[5,6,12,13,19,20,26,27,33,34]
@@ -52,6 +62,7 @@ def home(request):
             'dates':dates,
             'today':today,
             'work_p':work_p,
+            'colors_for_users':colors_for_users,
             'p':p,
             'month_and_year':x.get_current_month_and_year()}
     return render(request, 'cs_app/index.html',context)
