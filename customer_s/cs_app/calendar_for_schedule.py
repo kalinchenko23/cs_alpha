@@ -10,11 +10,11 @@ class Calendar():
         days=[]
         for day in calendar.monthcalendar(int(x.year),int(x.month)):
             for i in day:
-                day_name=calendar.day_name[calendar.weekday(int(x.year), int(x.month), int(i))]
-                days.append((i,day_name))
-
-
+                if i!=0:
+                    day_name=calendar.day_name[calendar.weekday(int(x.year), int(x.month), int(i))]
+                    days.append((i,day_name))
         return days
+
     def get_current_month_and_year(self):
         x=datetime.datetime.today()
         current_month=calendar.month_name[int(x.month)]
